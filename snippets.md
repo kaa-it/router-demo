@@ -1,4 +1,4 @@
-<input value={url} onChange={(e) => { setUrl(e.taget.value); }}>
+<input value={url} onChange={(e) => { setUrl(e.target.value); }}>
 
 ---
 
@@ -12,6 +12,32 @@ function Route({ path, currentPath, children }) {
 
 ```JSX
 const RouterContext = React.createContext({ currentPath: '/' });
+```
+
+```JSX
+const RouterContext = React.createContext({ currentPath: window.location.pathname });
+
+function Router({ children }) {
+	const [currentPath, setCurrentPath] = useState(window.location.pathname);
+
+	return <RouterContext.Provider value={{ currentPath }}>
+		{children}
+	</RouterContext.Provider>;
+}
+
+function Route({ path, children }) {
+	const { currentPath } = useContext(RouterContext);
+	return currentPath === path && children;
+}
+
+function Link({ href, children }) {
+	function handleClick(e) {
+		e.preventDefault();
+		history.pushState(null, '', href);
+	}
+
+	return <a onClick={handleClick}>{children}</a>
+}
 ```
 
 ```JSX
